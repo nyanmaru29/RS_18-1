@@ -27,6 +27,7 @@ AI_INVENTORY = ["Baked Sea Bass", "Grilled Salmon", "Roast Beef", "Roast Chicken
 
 # Dishes related
 DISH_POINTS = 10
+ADD_DISH_COST = 5000
 
 FOOD_TYPE_SEAFOOD = "Seafood"
 FOOD_TYPE_BEEF = "Beef"

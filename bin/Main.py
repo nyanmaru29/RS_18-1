@@ -17,7 +17,7 @@ class Main:
             name = str(config.get(section, "name"))
             type = str(config.get(section, "type"))
             baseCost = config.getfloat(section, "cost")
-            INGREDIENTS_LIST.append(Ingredient(name, type, baseCost, self.evManager))
+            INGREDIENTS_LIST.append(Ingredient(name, type, baseCost))
 
         # Load list of dishes
         config = configparser.ConfigParser()  # Reinitiate for new file
@@ -40,18 +40,14 @@ class Main:
                 if noIngredient:
                     print(ingredient)
 
-            dish = Dish(name, type, cuisine, ingredients, self.evManager)
+            dish = Dish(name, type, cuisine, ingredients)
             DISHES_LIST.append(dish)
             if cuisine == "Western":
                 WESTERN_DISHES.append(dish)
             elif cuisine == "Chinese":
                 CHINESE_DISHES.append(dish)
-            elif cuisine == "Japanese":
-                JAPANESE_DISHES.append(dish)
             elif cuisine == "Korean":
                 KOREAN_DISHES.append(dish)
-            elif cuisine == "Indian":
-                INDIAN_DISHES.append(dish)
 
         print(len(INGREDIENTS_LIST))
 

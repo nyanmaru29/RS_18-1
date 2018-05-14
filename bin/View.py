@@ -4,6 +4,11 @@ from bin import *
 import os
 import math
 from .Events import *
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.backends.backend_agg as agg
+
 
 WIDTH = 1280
 HEIGHT = 720
@@ -668,11 +673,6 @@ class DishBreakdown(pygame.sprite.Sprite):
         self.x = x
         self.y = y
 
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-        import matplotlib.backends.backend_agg as agg
-
         sizes = []
         labels = []
         for dish in parent.dishesServed:
@@ -917,6 +917,11 @@ class StaffTab(pygame.sprite.Sprite):
         if isinstance(event, StaffUpdateEvent):
             self.chefs = event.chefs
             self.waiters = event.waiters
+
+            self.chefsNumber = len(self.chefs)
+            self.waitersNumber = len(self.waiters)
+            self.chefsDisplay.Update()
+            self.waitersDisplay.Update()
 
             if self.mode == "My Staff":
                 ev = GUIRequestWindowRedrawEvent(self.name, self.DrawMyStaff)
@@ -1290,7 +1295,7 @@ class FireStaffButton(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
         Text("FIRE!!!", self.rect.centerx, self.rect.centery - 20, BLACK, 30, self.group, CENTER)
-        Text("($" + str(self.staff.salary * 6) + ")", self.rect.centerx, self.rect.centery + 20, BLACK, 30, self.group, CENTER)
+        Text("($" + str(self.staff.salary * 3) + ")", self.rect.centerx, self.rect.centery + 20, BLACK, 30, self.group, CENTER)
 
     def Clicked(self):
         ev = FireStaffEvent(self.staff)
@@ -1544,7 +1549,7 @@ class RestaurantDetail(pygame.sprite.Sprite):
         Text(str(self.parent.capacity), self.rect.left + 160, self.rect.top + 90, BLACK, 25,
                                        self.group, CENTER)
 
-        Text("Operating Cost:", WIDTH * 8.5/100, self.rect.top + 120, BLACK, 25, self.group, CENTER)
+        Text("Operating Cost:", self.rect.centerx + 4, self.rect.top + 120, BLACK, 25, self.group, CENTER)
         Text(str(self.parent.operatingCost), WIDTH * 8.5/100, self.rect.top + 140, BLACK, 25,
                                             self.group, CENTER)
 
@@ -1575,12 +1580,12 @@ class UpgradeDetail(pygame.sprite.Sprite):
         #UPGRADE LEVEL
 
         Text("Level:", self.rect.left + 40, self.rect.top + 10, BLACK, 23, self.group)
-        Text(str(self.parent.level), self.rect.left + 100, self.rect.top + 17, BLACK, 25, self.group)
+        Text(str(self.parent.level), self.rect.left + 95, self.rect.top + 17.5, BLACK, 25, self.group, CENTER)
 
         if not self.parent.level == self.parent.nextLevel:
             # TODO: Replace with Arrow Sprite
             Text("-->", self.rect.left + 120, self.rect.top + 17, BLACK, 25, self.group, CENTER)
-            Text(str(self.parent.nextLevel), self.rect.left + 145, self.rect.top + 17, BLACK, 25, self.group)
+            Text(str(self.parent.nextLevel), self.rect.left + 145, self.rect.top + 17, BLACK, 25, self.group, CENTER)
             Text("+$" + str(self.parent.operatingCostDiffLevel), self.rect.left + 50, self.rect.top + 45, BLACK, 25,
                  self.group, CENTER)
             Text("$" + str(self.parent.upgradeLevelCost), self.rect.left + 130, self.rect.top + 45, BLACK, 25,
@@ -1591,12 +1596,12 @@ class UpgradeDetail(pygame.sprite.Sprite):
 
         #UPGRADE CAPACITY
         Text("Capacity:", self.rect.left + 10, self.rect.top + 100, BLACK, 23, self.group)
-        Text(str(self.parent.capacity), self.rect.left + 120, self.rect.top + 108, BLACK, 23, self.group)
+        Text(str(self.parent.capacity), self.rect.left + 105, self.rect.top + 110, BLACK, 23, self.group, CENTER)
 
         # TODO: Replace with Arrow Sprite
         Text("-->", self.rect.left + 140, self.rect.top + 107, BLACK, 25, self.group, CENTER)
 
-        Text(str(self.parent.nextCapacity), self.rect.left + 190, self.rect.top + 108, BLACK, 23, self.group)
+        Text(str(self.parent.nextCapacity), self.rect.left + 175, self.rect.top + 110, BLACK, 23, self.group, CENTER)
         Text("+$" + str(self.parent.operatingCostDiffCapacity), self.rect.left + 50, self.rect.top + 135, BLACK, 25,
             self.group, CENTER)
 
@@ -1896,6 +1901,7 @@ class MarketingButton(pygame.sprite.Sprite):
     def Hover(self):
         text = "Promote Your Restaurant"
         ev = GUITooltipEvent(text)
+        self.evManager.Post(ev)
 
     def Notify(self, event):
         if isinstance(event, MarketingUpdateEvent):
@@ -1906,36 +1912,6 @@ class MarketingButton(pygame.sprite.Sprite):
 
 
 # MENU CATALOGUE & ADD DISH TO PLAYER's MENUS ----------------------------------------------------------------
-
-
-class AddDishButton(pygame.sprite.Sprite):
-    def __init__(self, evManager, group=None, popUp=None, windowGroup=None):
-        pygame.sprite.Sprite.__init__(self, group)
-        self.evManager = evManager
-
-        self.name = "Add Dish Window"
-        self.group = group
-        self.popUp = popUp
-
-        self.x = WIDTH * 50 / 100
-        self.y = HEIGHT * 78 / 100
-        self.image = pygame.Surface((40, 40))
-        self.image.fill(BLUE)
-        self.rect = self.image.get_rect()
-        self.rect.center = (self.x, self.y)
-        self.windowGroup = windowGroup
-
-    def Draw(self):
-        self.windowGroup.empty()
-        AddDishWindow(self, self.evManager, self.popUp, self.windowGroup)
-
-    def Clicked(self):
-        ev = GUIRequestWindowEvent(self.name, self.Draw)
-
-        self.evManager.Post(ev)
-
-    def Notify(self, event):
-        pass
 
 
 class MarketingWindow:
@@ -2116,12 +2092,8 @@ class DishScreen(pygame.sprite.Sprite):
             self.dishList = WESTERN_DISHES
         elif self.cuisine == "Chinese":
             self.dishList = CHINESE_DISHES
-        elif self.cuisine == "Japanese":
-            self.dishList = JAPANESE_DISHES
         elif self.cuisine == "Korean":
             self.dishList = KOREAN_DISHES
-        elif self.cuisine == "Indian":
-            self.dishList = INDIAN_DISHES
 
         self.dishContainers = []
 
@@ -2181,7 +2153,7 @@ class DishContainer(pygame.sprite.Sprite):
         self.window = window
         self.contents = []
 
-        self.contents.append(Text(self.dish.name, self.x - 75, self.y - 20, WHITE, 14, self.group))
+        self.contents.append(Text(self.dish.name, self.x - 75, self.y - 20, WHITE, 20, self.group))
         self.contents.append(DishSprite(self.x - 100, self.y, dish, self.group))
 
     def Clicked(self):
@@ -2260,7 +2232,7 @@ class DishDetail(pygame.sprite.Sprite):
 
                 else:
                     self.contents.append(AddToMenu(self.x, self.y + 120, self.dish, self, self.evManager, self.group))
-                    self.contents.append(Text("Add To Menu ($1000)", self.x, self.y + 120, WHITE, 20,
+                    self.contents.append(Text("Add To Menu ($" + str(ADD_DISH_COST) + ")", self.x, self.y + 120, WHITE, 20,
                                               self.group, CENTER))
             self.Update()
 
@@ -2584,6 +2556,11 @@ class AddToCart(pygame.sprite.Sprite):
             self.container.quantity = 0
             self.container.Update()
 
+    def Hover(self):
+        text = "Add to Cart"
+        ev = GUITooltipEvent(text)
+        self.evManager.Post(ev)
+
 
 class CartScreen(pygame.sprite.Sprite):
     def __init__(self, parent, evManager, group=None):
@@ -2652,8 +2629,8 @@ class ItemContainer(pygame.sprite.Sprite):
         self.contents = []
 
         self.contents.append(ItemSprite(self.x, self.y, self.item, self, self.evManager, self.group))
-        self.contents.append(Text(str(self.item.quality), self.x - 3, self.y - 30, BLACK, 14, self.group))
-        self.contents.append(Text(str(self.item.amount), self.x - 3, self.y + 10, BLACK, 14, self.group))
+        self.contents.append(Text(str(self.item.quality), self.x, self.y - 18, BLACK, 18, self.group, CENTER))
+        self.contents.append(Text(str(self.item.amount), self.x, self.y + 20, BLACK, 18, self.group, CENTER))
 
     def Clicked(self):
         ev = RemoveFromCartEvent(self.item)
@@ -2674,6 +2651,11 @@ class ItemSprite(pygame.sprite.Sprite):
         self.image = pygame.Surface((25, 25))
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
+
+    def Hover(self):
+        text = self.item.name
+        ev = GUITooltipEvent(text)
+        self.evManager.Post(ev)
 
 
 class BuyButton(pygame.sprite.Sprite):
