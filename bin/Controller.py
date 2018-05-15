@@ -36,6 +36,15 @@ class Controller:
                 elif event.type == KEYDOWN and event.key == K_e:
                     ev = NewDayEvent()
 
+                elif event.type == KEYDOWN and event.key == K_w:
+                    ev = NewGameRequestEvent()
+
+                elif event.type == KEYDOWN and event.key == K_a:
+                    ev = LoadGameRequestEvent("save1")
+
+                elif event.type == KEYDOWN and event.key == K_s:
+                    ev = SaveGameRequestEvent()
+
                 elif event.type == KEYDOWN and event.key == K_LSHIFT:
                     self.shiftPressed = True
                     self.ctrlPressed = False
@@ -68,4 +77,7 @@ class Controller:
 
     def Notify(self, event):
         if isinstance(event, QuitEvent):
+            ev = SaveGameRequestEvent()
+            self.evManager.Post(ev)
+
             self.keepGoing = False

@@ -9,6 +9,15 @@ class TrendManager:
         self.trends = [self.DishTrend, self.FoodTypeTrend, self.CuisineTypeTrend]
         self.currentTrend = None
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.evManager = Main.evManager
+        self.evManager.RegisterListener(self)
+
     def SetTrend(self):
         self.currentTrend = None
         self.currentTrend = random.choices(self.trends, weights=[10, 3, 2], k=1)[0]()

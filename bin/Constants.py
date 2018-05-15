@@ -1,29 +1,27 @@
 # Game state
-STATE_PREPARING = "Game Preparing"
 STATE_PAUSED = "Game Paused"
 STATE_STARTED = "Game Started"
 
 # Screen settings
 DISPLAY_RESOLUTION = (1280, 720)
 DRAW_RESOLUTION = (1280, 720)
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 
 # Text alignment
-CENTER = "Center"
-RIGHT = "Right"
-LEFT = "Left"
+TEXT_CENTER = "Center"
+TEXT_RIGHT = "Right"
+TEXT_LEFT = "Left"
 
 # List of dishes & ingredients exist in game
 INGREDIENTS_LIST = []
 DISHES_LIST = []
 WESTERN_DISHES = []
 CHINESE_DISHES = []
-JAPANESE_DISHES = []
 KOREAN_DISHES = []
-INDIAN_DISHES = []
 
 # Game defaults
 AI_DEFAULT_MENU = []
-AI_INVENTORY = ["Baked Sea Bass", "Grilled Salmon", "Roast Beef", "Roast Chicken", "Lamb Shank"]
 
 # Dishes related
 DISH_POINTS = 10
@@ -38,9 +36,7 @@ FOOD_TYPE_LIST = [FOOD_TYPE_SEAFOOD, FOOD_TYPE_BEEF, FOOD_TYPE_POULTRY, FOOD_TYP
 
 CUISINE_WESTERN = "Western"
 CUISINE_CHINESE = "Chinese"
-CUISINE_JAPANESE = "Japanese"
 CUISINE_KOREAN = "Korean"
-CUISINE_INDIAN = "Indian"
 CUISINES_LIST = [CUISINE_WESTERN, CUISINE_CHINESE, CUISINE_KOREAN]
 
 INGREDIENT_TYPE_SEAFOOD = "Seafood"
@@ -55,22 +51,24 @@ STARTING_CUSTOMERS = 100
 # Staff
 CHEF_SALARY = [45000, 50000, 60000, 75000]
 WAITER_SALARY = [10000, 12000, 15000, 20000]
+CUSTOMERS_PER_CHEF = 100
+CUSTOMERS_PER_WAITER = 30
 
 # Finance related
-INVENTORY = "Inventory"
-RENOVATION = "Renovation"
-SALARY = "Salary"
-EXPENSE = "Expense"
-SALES = "Sales"
-PROFIT = "Profit"
-MARKETING = "Marketing"
-CASH = "Cash"
-MISC = "Misc"
+FIN_INVENTORY = "Inventory"
+FIN_RENOVATION = "Renovation"
+FIN_SALARY = "Salary"
+FIN_EXPENSE = "Expense"
+FIN_SALES = "Sales"
+FIN_PROFIT = "Profit"
+FIN_MARKETING = "Marketing"
+FIN_CASH = "Cash"
+FIN_MISC = "Misc"
 
 # Fiscal Term
-DAILY = "daily"
-MONTHLY = "monthly"
-YEARLY = "yearly"
+FIN_TERM_DAILY = "daily"
+FIN_TERM_MONTHLY = "monthly"
+FIN_TERM_YEARLY = "yearly"
 
 # Marketing
 MARKETING_LIST = []

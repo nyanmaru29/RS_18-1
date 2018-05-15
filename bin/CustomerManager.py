@@ -11,6 +11,16 @@ class CustomerManager:
         self.totalCustomers = None
         self.prevCustomers = STARTING_CUSTOMERS
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.evManager = Main.evManager
+        self.evManager.RegisterListener(self)
+        print(self.evManager)
+
     def TotalCustomers(self):
         # TODO: Implement BETTER system to generate number of customers incorporating random events
         customers = None
@@ -34,15 +44,8 @@ class CustomerManager:
             else:
                 player.impression = 0
 
-        # TODO: Capacity overflow
-
-        leftoverCustomers = 0
         for player in players:
             customers = math.floor(self.totalCustomers * (player.impression / totalImpression))
-
-            if customers > player.restaurantCapacity:
-                leftoverCustomers = customers - player.restaurantCapacity
-                customers = player.restaurantCapacity
 
             player.ProcessSales(customers)
 

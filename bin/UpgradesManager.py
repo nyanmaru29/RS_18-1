@@ -5,6 +5,15 @@ class UpgradesManager: #values are called when even is requested
         self.evManager = evManager
         self.player = player
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.evManager = Main.evManager
+        print(self.evManager)
+
     def UpgradeLevel(self):  # initial LEVEL is 1
         self.player.restaurantLvl = self.NextLevel()
 

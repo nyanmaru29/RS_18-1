@@ -5,6 +5,7 @@ import json
 from tkinter import *
 import tkinter as tk
 from tkinter import messagebox
+import os
 
 
 class Authentication(tk.Tk):
@@ -12,6 +13,8 @@ class Authentication(tk.Tk):
     def __init__(self, evManager):
         self.evManager = evManager
         self.evManager.RegisterListener(self)
+
+        self.checkSecurity()
 
         tk.Tk.__init__(self)
         self._frame = None
@@ -24,6 +27,26 @@ class Authentication(tk.Tk):
             self._frame.destroy()
         self._frame = newFrame
         self._frame.pack()
+
+    def checkSecurity(self):
+        if os.path.exists("../security"):
+            try:
+                with open("../security/hash.json", "r") as json_file:
+                    json_file.close()
+            except FileNotFoundError:
+                key = []
+                with open("../security/hash.json", "a+") as json_file:
+                    json.dump(key, json_file)
+                    json_file.close()
+
+        else:
+            os.makedirs("../security")
+            key = []
+            with open("../security/hash.json", "a+") as json_file:
+                json.dump(key, json_file)
+                json_file.close()
+
+
 
     def Notify(self, event):
         if isinstance(event, AuthenticatedEvent):
@@ -76,7 +99,7 @@ class loginPage(tk.Frame):
         user = self.userEntry.get()
         password = self.passwordEntry.get()
 
-        with open('security/hash.json', 'r') as json_file:
+        with open('../security/hash.json', 'r') as json_file:
             keyList = json.load(json_file)
 
         noUser = True
@@ -135,12 +158,11 @@ class registerPage(tk.Frame):
         startButton.place(x=108, y=200)
 
     def newUser(self):
-
         userNew = self.userNewEntry.get()
         passwordNew = self.passwordNewEntry.get()
         passwordConfirm = self.passwordConfirmEntry.get()
 
-        with open('security/hash.json', 'r') as json_file:
+        with open('../security/hash.json', 'r') as json_file:
             keyList = json.load(json_file)
             json_file.close()
 
@@ -173,7 +195,7 @@ class registerPage(tk.Frame):
             keys['user'] = userNew
             keys['hashValue'] = sha256_crypt.encrypt(passwordNew)
 
-            with open('security/hash.json', 'w') as json_file:
+            with open('../security/hash.json', 'w') as json_file:
                 keyList.append(keys)
                 json.dump(keyList, json_file, indent=4)
             json_file.close()

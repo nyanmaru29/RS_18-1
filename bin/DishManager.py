@@ -6,6 +6,15 @@ class DishManager:
     def __init__(self, evManager):
         self.evManager = evManager
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.evManager = Main.evManager
+        print(self.evManager)
+
     def UnfedCustomers(self, customers, dishList):
         sales = 0
         for dish in dishList:

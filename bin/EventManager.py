@@ -1,4 +1,5 @@
 from .Events import *
+from .Main import *
 
 class EventManager:
     # responsible for coordinating most communication
@@ -8,7 +9,10 @@ class EventManager:
         self.listeners = WeakKeyDictionary()
 
     def RegisterListener(self, listener):
-        self.listeners[listener] = 1
+        try:
+            self.listeners[listener] = 1
+        except AttributeError:
+            pass
 
     def UnregisterListener(self, listener):
         if listener in self.listeners.keys():
@@ -19,3 +23,8 @@ class EventManager:
         for listener in keys:
             listener.Notify(event)
 
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        pass
