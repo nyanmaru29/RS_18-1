@@ -125,6 +125,8 @@ class View:
         if isinstance(event, GameStartedEvent):
             # All sprite start from here.
             # Sprite will carry it group from here.
+            self.backgroundSprite = BackgroundSprite(self.mainUI)
+            self.restaurantSprite = RestaurantSpite(1, self.mainUI)
             self.staffTab = StaffTab(self.evManager, self.mainUI, self.windows, self.popUp)
             self.restaurantTab = RestaurantTab(self.evManager, self.mainUI, self.popUp)
             self.menuTab = MenuTab(self.evManager, self.mainUI, self.popUp)
@@ -282,6 +284,23 @@ class View:
                             continue
 
 # --------------------------------------------------------------------------------------------------------------
+class BackgroundSprite(pygame.sprite.Sprite):
+    def __init__(self, group=None):
+        pygame.sprite.Sprite.__init__(self, group)
+        self.image = pygame.image.load(os.path.join(imgFolder, "Background.png")).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT * 33/100)
+
+
+class RestaurantSpite(pygame.sprite.Sprite):
+    def __init__(self, level, group=None):
+        pygame.sprite.Sprite.__init__(self, group)
+        self.level = level
+        self.image = pygame.image.load(os.path.join(imgFolder, "RestaurantLevel" + str(self.level) + ".png"))\
+                    .convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.midbottom = (SCREEN_WIDTH/2, SCREEN_HEIGHT * 63/100)
+
 
 class DynamicText(pygame.sprite.Sprite):
     def __init__(self, text, x, y, parent, color, fontSize, group=None):
